@@ -1,0 +1,24 @@
+server:
+  port: 7750
+qim-manage:
+  # qim -manage 地址
+  address: http://localhost:7777
+spring:
+  cloud:
+    gateway:
+      routes:
+        # 登陆
+        - id: login
+          uri: ${qim-manage.address}
+          predicates:
+            - Path=/login
+        # 群组
+        - id: group
+          uri: ${qim-manage.address}
+          predicates:
+            - Path=/group/**
+        # 好友
+        - id: friend
+          uri: ${qim-manage.address}
+          predicates:
+            - Path=/friend/**
