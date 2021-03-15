@@ -18,6 +18,7 @@ import retrofit2.Response;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,28 +34,29 @@ public class QimFriendCommands {
     private FriendService friendService;
 
     @ShellMethod(value = "获取好友列表", prefix = "-")
-    public void fls() throws IOException {
+    public List<String> fls() throws IOException {
+        List<String> result = new ArrayList<>();
         Call<QimResponse<List<QimUser>>> call = friendService.allFriends(shellClient.getUserId());
         Response<QimResponse<List<QimUser>>> response = call.execute();
         if (response.isSuccessful()) {
             QimResponse<List<QimUser>> qimResponse = response.body();
             if (QimResponseUtils.isOk(qimResponse)) {
                 List<QimUser> list = qimResponse.getData();
-                System.out.println("我的好友列表：");
+                result.add("我的好友列表：");
                 if (CollectionUtils.isEmpty(list)) {
-                    System.out.println("暂无好友");
-                    return;
+                    result.add("暂无好友");
+
                 }
                 for (QimUser user : list) {
-                    System.out.printf("\tid[%d],username[%s]\n", user.getUserId(), user.getUsername());
+                    result.add(String.format("\tid[%d],username[%s]", user.getUserId(), user.getUsername()));
                 }
             }
         }
+        return result;
     }
 
     @ShellMethod(key = "fadd", value = "添加好友", prefix = "-")
-    public void addFriend(List<Long> ids) throws IOException {
-
+    public String addFriend(List<Long> ids) throws IOException {
         FriendAddVO friendAddVO = new FriendAddVO();
         friendAddVO.setUserId(shellClient.getUserId());
         friendAddVO.setFriends(ids);
@@ -63,9 +65,10 @@ public class QimFriendCommands {
         if (response.isSuccessful()) {
             QimResponse<Void> qimResponse = response.body();
             if (QimResponseUtils.isOk(qimResponse)) {
-                System.out.println("成功添加好友");
+                return "添加好友成功";
             }
         }
+        return "添加好友失败";
     }
 
     @PostConstruct

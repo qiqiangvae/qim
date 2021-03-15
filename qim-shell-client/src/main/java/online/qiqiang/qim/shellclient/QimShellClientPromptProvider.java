@@ -18,10 +18,10 @@ public class QimShellClientPromptProvider implements PromptProvider {
     @Override
     public AttributedString getPrompt() {
         if (loginSource != null) {
-            return new AttributedString(loginSource.getUserId() + ":>",
+            return new AttributedString(loginSource.getUserId() + "@online" + ":>",
                     AttributedStyle.DEFAULT.foreground(AttributedStyle.YELLOW));
         } else {
-            return new AttributedString("server-unknown:>",
+            return new AttributedString("guest@outline:>",
                     AttributedStyle.DEFAULT.foreground(AttributedStyle.RED));
         }
     }

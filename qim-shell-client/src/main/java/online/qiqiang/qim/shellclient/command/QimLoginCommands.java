@@ -22,13 +22,15 @@ public class QimLoginCommands {
     private ApplicationContext applicationContext;
 
     @ShellMethod(value = "登陆    login -u [uerId] -p [password]", prefix = "-")
-    public void login(String u, String p) {
+    public String login(String u, String p) {
         if (shellClient.notLogin()) {
-            shellClient.login(u, p);
+            String login = shellClient.login(u, p);
             LoginSource loginSource = new LoginSource();
             loginSource.setUserId(u);
             applicationContext.publishEvent(new LoginEvent(loginSource));
+            return login;
         }
+        return "用户已登陆";
     }
 
 }

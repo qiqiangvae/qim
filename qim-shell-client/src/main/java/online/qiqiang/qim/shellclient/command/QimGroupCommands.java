@@ -16,6 +16,7 @@ import retrofit2.Response;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,27 +30,28 @@ public class QimGroupCommands {
     private GroupService groupService;
 
     @ShellMethod(value = "获取群成员  -g [groupId]", prefix = "-")
-    public void gls(String g) throws IOException {
+    public List<String> gls(String g) throws IOException {
         Call<QimResponse<List<QimUser>>> group = groupService.group(g);
         Response<QimResponse<List<QimUser>>> response = group.execute();
+        List<String> result = new ArrayList<>();
         if (response.isSuccessful()) {
             QimResponse<List<QimUser>> qimResponse = response.body();
             if (QimResponseUtils.isOk(qimResponse)) {
                 List<QimUser> list = qimResponse.getData();
-                System.out.println(g + "群成员列表：");
+                result.add(g + "群成员列表：");
                 if (CollectionUtils.isEmpty(list)) {
-                    System.out.println("暂无成员");
-                    return;
+                    result.add("暂无成员");
                 }
                 for (QimUser user : list) {
-                    System.out.printf("\tid[%d],username[%s]\n", user.getUserId(), user.getUsername());
+                    result.add(String.format("\tid[%d],username[%s]", user.getUserId(), user.getUsername()));
                 }
             }
         }
+        return result;
     }
 
     @ShellMethod(key = "gpush", value = "添加群成员  -g [groupId] -us [userId]", prefix = "-")
-    public void groupPushUser(String g, List<Long> us) throws IOException {
+    public String groupPush(String g, List<Long> us) throws IOException {
         GroupPushUserVO vo = new GroupPushUserVO();
         vo.setGroupId(g);
         vo.setUserIdList(us);
@@ -58,9 +60,10 @@ public class QimGroupCommands {
         if (response.isSuccessful()) {
             QimResponse<Void> qimResponse = response.body();
             if (QimResponseUtils.isOk(qimResponse)) {
-                System.out.println("添加群成员成功");
+                return "添加群成员成功";
             }
         }
+        return "添加群成员失败";
     }
 
     @PostConstruct

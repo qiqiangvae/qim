@@ -45,14 +45,14 @@ public class ShellClient {
                     imClient.setInetSocketAddress(new InetSocketAddress(split[0], Integer.parseInt(split[1])));
                     imClient.start();
                 } else {
-                    System.out.println("登陆失败");
+                    return "登陆失败";
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         this.userId = Long.parseLong(userId);
-        return "OK";
+        return "[" + userId + "]登陆成功";
     }
 
 
@@ -62,20 +62,27 @@ public class ShellClient {
         }
         ImProtocol protocol = new ImProtocol();
         protocol.setVersion(ImProtocolVersion.V1);
+        String result;
         if (group) {
             protocol.setMsgType(MsgType.CHAT_GROUP.ordinal());
             GroupChatMsg chatMsg = new GroupChatMsg(imClient.getUserId(), receiver);
             chatMsg.setContent(message);
             protocol.setBody(chatMsg);
+            result = "[群聊(" + receiver + ")消息]我:" + message;
         } else {
             protocol.setMsgType(MsgType.CHAT_PRIVATE.ordinal());
             PrivateChatMsg chatMsg = new PrivateChatMsg(imClient.getUserId(), receiver);
             chatMsg.setContent(message);
             protocol.setBody(chatMsg);
+            result = "[私聊消息]我:" + message;
         }
-        imClient.write(protocol);
-        System.out.println("我:" + message);
-        return "OK";
+        boolean ok = imClient.write(protocol);
+        if (ok) {
+            return result;
+        } else {
+            return "消息发送失败";
+        }
+
     }
 
     public Long getUserId() {

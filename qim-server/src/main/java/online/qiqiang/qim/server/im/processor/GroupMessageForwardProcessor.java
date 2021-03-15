@@ -65,6 +65,7 @@ public class GroupMessageForwardProcessor implements QimMessageProcessor<GroupCh
         }
         context.put(ContextConst.GROUP_USERS_KEY, users);
         // 如果还有未处理的数据，则转发
+        // todo 需要考虑离线用户的情况
         if (!message.isForwardMsg() && members.size() > users.size()) {
             message.setForward(true);
             context.getExecutor().execute(() -> {

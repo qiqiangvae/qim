@@ -15,8 +15,8 @@ public class QimSendCommands {
     @Autowired
     private ShellClient shellClient;
     @ShellMethod(value = "发送消息    send -r[receiver] -g[groupId] -m [message]", prefix = "-")
-    public void send(String r, boolean g, String m) {
-        shellClient.send(r, g, m);
+    public String send(String r, boolean g, String m) {
+       return shellClient.send(r, g, m);
     }
 
 }

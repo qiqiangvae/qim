@@ -28,8 +28,14 @@ public class ImClient {
     public ImClient(String userId) {
         this.userId = userId;
     }
-    public void write(ImProtocol protocol) {
-        channel.writeAndFlush(protocol);
+
+    public boolean write(ImProtocol protocol) {
+        try {
+            return channel.writeAndFlush(protocol).sync().isSuccess();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 
@@ -62,7 +68,7 @@ public class ImClient {
             } else {
                 Thread.sleep(2000);
                 channel.eventLoop().execute(() -> {
-                    log.info("正在重新连接[{}]…………", inetSocketAddress);
+                    log.warn("正在重新连接[{}]…………", inetSocketAddress);
                     connect();
                 });
             }

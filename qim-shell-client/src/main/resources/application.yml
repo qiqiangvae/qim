@@ -1,2 +1,5 @@
 qim-route:
   address: http://localhost:7750
+logging:
+  level:
+    online.qiqiang.qim.client: warn
