@@ -7,7 +7,6 @@ import online.qiqiang.qim.protocol.ImProtocolVersion;
 import online.qiqiang.qim.protocol.msg.MsgType;
 import online.qiqiang.qim.protocol.msg.PrivateChatMsg;
 import online.qiqiang.qim.server.im.ImConnectionHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -17,12 +16,16 @@ import org.springframework.stereotype.Component;
  * @author qiqiang
  */
 @Component
-@Processor(type = MsgType.CHAT_PRIVATE)
+@Processor(MsgType.CHAT_PRIVATE)
 @Slf4j
 @Order(1)
 public class PrivateMessageWriteProcessor implements QimMessageProcessor<PrivateChatMsg> {
-    @Autowired
-    private ImConnectionHandler connectionHandler;
+
+    private final ImConnectionHandler connectionHandler;
+
+    public PrivateMessageWriteProcessor(ImConnectionHandler connectionHandler) {
+        this.connectionHandler = connectionHandler;
+    }
 
 
     @Override

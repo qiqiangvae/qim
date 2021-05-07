@@ -1,8 +1,8 @@
 package online.qiqiang.qim.client.service;
 
-import online.qiqiang.qim.common.user.QimUser;
 import online.qiqiang.qim.common.vo.GroupPushUserVO;
 import online.qiqiang.qim.common.vo.QimResponse;
+import online.qiqiang.qim.common.vo.QimUserVO;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface GroupService {
     @GET("group/{groupId}")
-    Call<QimResponse<List<QimUser>>> group(@Path("groupId") String groupId);
+    Call<QimResponse<List<QimUserVO>>> group(@Path("groupId") String groupId);
 
     @POST("group/push")
     Call<QimResponse<Void>> push(@Body GroupPushUserVO vo);

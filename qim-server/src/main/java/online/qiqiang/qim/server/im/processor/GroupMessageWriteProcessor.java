@@ -22,7 +22,7 @@ import java.util.List;
  * @author qiqiang
  */
 @Component
-@Processor(type = MsgType.CHAT_GROUP)
+@Processor(MsgType.CHAT_GROUP)
 @Slf4j
 @Order(1)
 public class GroupMessageWriteProcessor implements QimMessageProcessor<GroupChatMsg> {

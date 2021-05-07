@@ -55,7 +55,7 @@ public class ServerCluster {
     }
 
     @EventListener(ServerNodeChangedEvent.class)
-    public void imServerRegisteredEvent(ServerNodeChangedEvent event) {
+    public void serverNodeChangedEvent(ServerNodeChangedEvent event) {
         this.serverInfoList = event.getServerInfoList();
         this.reBuildConnected();
     }
@@ -63,5 +63,9 @@ public class ServerCluster {
     @EventListener(ImServerRegisteredEvent.class)
     public void imServerRegisteredEvent(ImServerRegisteredEvent event) {
         this.selfServer = event.getImServerInfo();
+    }
+
+    public ImServerInfo getSelfServer() {
+        return selfServer;
     }
 }

@@ -14,3 +14,5 @@ spring:
     port: 6379
 naming:
   zookeeper: zookeeper.qiqiang.com:2181
+im-store:
+  type: redis

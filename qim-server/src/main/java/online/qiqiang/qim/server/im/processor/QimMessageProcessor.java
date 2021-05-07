@@ -7,12 +7,18 @@ import online.qiqiang.qim.protocol.msg.QimMsg;
  */
 public interface QimMessageProcessor<M extends QimMsg> {
     /**
-     * 是否继续传播
+     * 处理
      *
-     * @param context
-     * @return
+     * @param context 上下文
+     * @return 是否继续传播
      */
     boolean process(ProcessorContext<M> context);
 
+    /**
+     * 是否活动
+     *
+     * @param context 上下文
+     * @return 是否活动
+     */
     boolean active(ProcessorContext<M> context);
 }

@@ -1,8 +1,8 @@
 package online.qiqiang.qim.client.service;
 
-import online.qiqiang.qim.common.user.QimUser;
 import online.qiqiang.qim.common.vo.FriendAddVO;
 import online.qiqiang.qim.common.vo.QimResponse;
+import online.qiqiang.qim.common.vo.QimUserVO;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface FriendService {
     @GET("friend/{userId}")
-    Call<QimResponse<List<QimUser>>> allFriends(@Path("userId") Long userId);
+    Call<QimResponse<List<QimUserVO>>> allFriends(@Path("userId") Long userId);
 
     @POST("friend/add")
     Call<QimResponse<Void>> add(@Body FriendAddVO friendAddVO);

@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "naming.zookeeper",
+      "type": "java.lang.String",
+      "description": "zookeeper 地址",
+      "sourceType": "online.qiqiang.qim.naming.NamingConfig"
+    }
+  ]
+}

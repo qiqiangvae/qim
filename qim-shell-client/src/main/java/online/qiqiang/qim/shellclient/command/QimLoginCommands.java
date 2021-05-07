@@ -24,13 +24,25 @@ public class QimLoginCommands {
     @ShellMethod(value = "登陆    login -u [uerId] -p [password]", prefix = "-")
     public String login(String u, String p) {
         if (shellClient.notLogin()) {
-            String login = shellClient.login(u, p);
+            ShellClient.LoginResult login = shellClient.login(u, p);
             LoginSource loginSource = new LoginSource();
             loginSource.setUserId(u);
-            applicationContext.publishEvent(new LoginEvent(loginSource));
-            return login;
+            if (login.ok) {
+                applicationContext.publishEvent(new LoginEvent(loginSource));
+            }
+            return login.message;
         }
         return "用户已登陆";
+    }
+
+    @ShellMethod(value = "退出登陆")
+    public String logout() {
+        if (shellClient.notLogin()) {
+            return "用户未登陆";
+        }
+        shellClient.logout();
+        applicationContext.publishEvent(new LoginEvent(null));
+        return "退出登陆成功";
     }
 
 }

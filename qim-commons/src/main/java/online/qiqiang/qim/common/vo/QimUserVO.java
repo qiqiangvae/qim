@@ -1,4 +1,4 @@
-package online.qiqiang.qim.common.user;
+package online.qiqiang.qim.common.vo;
 
 
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class QimUser {
+public class QimUserVO {
     private Long userId;
     private String username;
 }

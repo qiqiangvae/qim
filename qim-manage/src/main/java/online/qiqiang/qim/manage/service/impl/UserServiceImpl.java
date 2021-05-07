@@ -1,6 +1,6 @@
 package online.qiqiang.qim.manage.service.impl;
 
-import online.qiqiang.qim.common.user.QimUser;
+import online.qiqiang.qim.manage.dto.QimUser;
 import online.qiqiang.qim.manage.entity.UserAccount;
 import online.qiqiang.qim.manage.repository.UserAccountRepository;
 import online.qiqiang.qim.manage.service.UserService;

@@ -1,6 +1,9 @@
-package online.qiqiang.qim.server.store;
+package online.qiqiang.qim.managesdk.store;
 
-import online.qiqiang.qim.server.im.ChatLine;
+
+import online.qiqiang.qim.managesdk.ChatLine;
+
+import java.util.List;
 
 /**
  * @author qiqiang
@@ -13,4 +16,6 @@ public interface ChatMessageStore {
      * @return
      */
     boolean write(ChatLine chatLine);
+
+    List<ChatLine> read(String userId);
 }

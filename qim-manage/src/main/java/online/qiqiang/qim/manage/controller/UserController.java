@@ -2,8 +2,9 @@ package online.qiqiang.qim.manage.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import online.qiqiang.qim.common.user.QimUser;
+import online.qiqiang.qim.manage.dto.QimUser;
 import online.qiqiang.qim.common.vo.QimResponse;
+import online.qiqiang.qim.common.vo.QimUserVO;
 import online.qiqiang.qim.manage.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,8 +22,11 @@ public class UserController {
 
     @ApiOperation("注册用户")
     @PostMapping("/user/register")
-    public QimResponse<QimUser> save(@RequestBody QimUser qimUser) {
+    public QimResponse<QimUserVO> save(@RequestBody QimUser qimUser) {
         QimUser save = userService.save(qimUser);
-        return new QimResponse<>(save);
+        QimUserVO userVO = new QimUserVO();
+        userVO.setUserId(save.getUserId());
+        userVO.setUsername(save.getUsername());
+        return new QimResponse<>(userVO);
     }
 }

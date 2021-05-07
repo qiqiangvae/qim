@@ -1,6 +1,5 @@
 package online.qiqiang.qim.managesdk;
 
-import java.util.Collection;
 import java.util.Map;
 
 /**

@@ -3,9 +3,9 @@ package online.qiqiang.qim.manage.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import online.qiqiang.qim.common.user.QimUser;
 import online.qiqiang.qim.common.vo.FriendAddVO;
 import online.qiqiang.qim.common.vo.QimResponse;
+import online.qiqiang.qim.common.vo.QimUserVO;
 import online.qiqiang.qim.manage.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,11 +33,11 @@ public class FriendController {
 
     @ApiOperation("查询好友列表")
     @GetMapping("/friend/{userId}")
-    public QimResponse<List<QimUser>> friend(@ApiParam("用户ID") @PathVariable(value = "userId") Long userId) {
+    public QimResponse<List<QimUserVO>> friend(@ApiParam("用户ID") @PathVariable(value = "userId") Long userId) {
         List<Long> friends = friendService.friends(userId);
-        List<QimUser> qimUsers = new ArrayList<>(friends.size());
+        List<QimUserVO> qimUsers = new ArrayList<>(friends.size());
         for (Long friend : friends) {
-            QimUser user = new QimUser();
+            QimUserVO user = new QimUserVO();
             user.setUserId(friend);
             qimUsers.add(user);
         }

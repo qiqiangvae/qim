@@ -9,17 +9,17 @@ import online.qiqiang.qim.naming.NamingService;
 import online.qiqiang.qim.protocol.ImProtocol;
 import online.qiqiang.qim.protocol.msg.GroupChatMsg;
 import online.qiqiang.qim.protocol.msg.MsgType;
-import online.qiqiang.qim.server.event.ImServerRegisteredEvent;
 import online.qiqiang.qim.server.im.ServerCluster;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 群聊消息分发
@@ -27,7 +27,7 @@ import java.util.*;
  * @author qiqiang
  */
 @Component
-@Processor(type = MsgType.CHAT_GROUP)
+@Processor(MsgType.CHAT_GROUP)
 @Slf4j
 @Order(-1)
 public class GroupMessageForwardProcessor implements QimMessageProcessor<GroupChatMsg> {
@@ -39,10 +39,6 @@ public class GroupMessageForwardProcessor implements QimMessageProcessor<GroupCh
     private NamingService namingService;
     @Autowired
     private ServerCluster serverCluster;
-    /**
-     * 服务自身信息
-     */
-    private ImServerInfo selfImServerInfo;
 
 
     @Override
@@ -56,7 +52,7 @@ public class GroupMessageForwardProcessor implements QimMessageProcessor<GroupCh
         // 获取所有群内成员
         String groupId = message.getGroupId();
         Set<String> members = groupManager.getGroupMembers(groupId);
-        Map<Object, Object> entries = serverManager.getAllConnection(selfImServerInfo.getId());
+        Map<Object, Object> entries = serverManager.getAllConnection(serverCluster.getSelfServer().getId());
         List<String> users = new ArrayList<>(members.size() / 2);
         for (String userId : members) {
             if (entries.containsKey(userId)) {
@@ -70,7 +66,7 @@ public class GroupMessageForwardProcessor implements QimMessageProcessor<GroupCh
             message.setForward(true);
             context.getExecutor().execute(() -> {
                 for (ImServerInfo imServerInfo : imServerIdList()) {
-                    if (!StringUtils.equalsIgnoreCase(imServerInfo.getId(), selfImServerInfo.getId())) {
+                    if (!StringUtils.equalsIgnoreCase(imServerInfo.getId(), serverCluster.getSelfServer().getId())) {
                         log.info("转发到{}", imServerInfo);
                         ImClient imClient = serverCluster.imClient(imServerInfo.getId());
                         ImProtocol protocol = (ImProtocol) context.get(ContextConst.PROTOCOL_KEY);
@@ -83,13 +79,7 @@ public class GroupMessageForwardProcessor implements QimMessageProcessor<GroupCh
         return true;
     }
 
-
     private List<ImServerInfo> imServerIdList() {
         return namingService.serverList();
-    }
-
-    @EventListener(ImServerRegisteredEvent.class)
-    public void imServerRegisteredEvent(ImServerRegisteredEvent event) {
-        this.selfImServerInfo = event.getImServerInfo();
     }
 }

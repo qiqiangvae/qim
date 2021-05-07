@@ -17,7 +17,7 @@
 
 1. 搭建 redis，zookeeper，mysql 基础服务。
 
-2. 启动 qim-server 服务。配置文件如下：
+2. 启动 qim-server 服务。配置 zookeeper 地址，给服务一个唯一id
 
    ```yaml
    server:
@@ -31,7 +31,7 @@
      zookeeper: zookeeper.qiqiang.com:2181
    ```
 
-3. 启动 qim-manage 服务，启动后 swagger 地址访问`http://127.0.0.1:7777/swagger-ui/index.html`。配置文件如下：
+3. 启动 qim-manage 服务，启动后 swagger 地址访问`http://127.0.0.1:7777/swagger-ui/index.html`。配置 zookeeper 、redis和 mysql 地址。
 
    ```yaml
    server:
@@ -42,9 +42,6 @@
        username: root
        password: root
        driver-class-name: com.mysql.cj.jdbc.Driver
-     jpa:
-       hibernate:
-         ddl-auto: update
      redis:
        host: localhost
        port: 6379
@@ -52,7 +49,7 @@
      zookeeper: zookeeper.qiqiang.com:2181
    ```
 
-4. 启动 qim-route 服务。配置文件如下：
+4. 启动 qim-route 服务。配置 qim-manage 地址：
 
    ```yaml
    server:
@@ -60,28 +57,32 @@
    qim-manage:
      # qim -manage 地址
      address: http://localhost:7777
-   spring:
-     cloud:
-       gateway:
-         routes:
-           # 登陆
-           - id: login
-             uri: ${qim-manage.address}
-             predicates:
-               - Path=/login
-           # 群组
-           - id: group
-             uri: ${qim-manage.address}
-             predicates:
-               - Path=/group/**
-           # 好友
-           - id: friend
-             uri: ${qim-manage.address}
-             predicates:
-               - Path=/friend/**
    ```
 
 5. 最后启动若干个 qim-shell-client。输入 help 查看命令。
+
+   ```
+   Built-In Commands
+           clear: Clear the shell screen.
+           exit, quit: Exit the shell.
+           help: Display help about available commands.
+           script: Read and execute commands from a file.
+           stacktrace: Display the full stacktrace of the last error.
+   
+   friend
+           fadd: 添加好友
+           fls: 获取好友列表
+   
+   group
+           gls: 获取群成员  -g [groupId]
+           gpush: 添加群成员  -g [groupId] -us [userId]
+   
+   login
+           login: 登陆    login -u [uerId] -p [password]
+   
+   send
+           send: 发送消息    send -r[receiver] -g[groupId] -m [message]
+   ```
 
    
 

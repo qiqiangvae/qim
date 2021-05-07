@@ -22,3 +22,8 @@ spring:
           uri: ${qim-manage.address}
           predicates:
             - Path=/friend/**
+        # 历史消息
+        - id: historyMessage
+          uri: ${qim-manage.address}
+          predicates:
+            - Path=/historyMessage/**

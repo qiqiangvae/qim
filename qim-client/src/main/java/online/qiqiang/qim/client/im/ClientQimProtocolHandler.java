@@ -9,6 +9,7 @@ import online.qiqiang.qim.protocol.ImProtocol;
 import online.qiqiang.qim.protocol.msg.GroupChatMsg;
 import online.qiqiang.qim.protocol.msg.MsgType;
 import online.qiqiang.qim.protocol.msg.PrivateChatMsg;
+import online.qiqiang.qim.protocol.msg.QimMsg;
 
 /**
  * @author qiqiang
@@ -16,23 +17,35 @@ import online.qiqiang.qim.protocol.msg.PrivateChatMsg;
 @ChannelHandler.Sharable
 @Slf4j
 public class ClientQimProtocolHandler extends ChannelInboundHandlerAdapter {
+    private MsgReceiveCallback msgReceiveCallback;
+    private final MsgReceiveCallback defaultMsgReceiveCallback = new DefaultMsgReceiveCallback();
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object object) throws Exception {
         if (object instanceof ImProtocol) {
             ImProtocol imProtocol = (ImProtocol) object;
             int msgType = imProtocol.getMsgType();
             byte[] body = imProtocol.getBody();
+            QimMsg chatMsg = null;
+            MsgType type = MsgType.type(msgType);
             if (MsgType.CHAT_PRIVATE.equals(MsgType.type(msgType))) {
-                PrivateChatMsg chatMsg = HessianUtils.read(body, PrivateChatMsg.class);
-                System.out.println();
-                System.out.println("[私聊消息]" + chatMsg.getSender() + ":" + chatMsg.getContent());
+                chatMsg = HessianUtils.read(body, PrivateChatMsg.class);
             } else if (MsgType.CHAT_GROUP.equals(MsgType.type(msgType))) {
-                GroupChatMsg chatMsg = HessianUtils.read(body, GroupChatMsg.class);
-                System.out.println();
-                System.out.println("[群聊(" + chatMsg.getGroupId() + ")消息]" + chatMsg.getSender() + ":" + chatMsg.getContent());
+                chatMsg = HessianUtils.read(body, GroupChatMsg.class);
+            }
+            if (chatMsg != null) {
+                if (msgReceiveCallback == null) {
+                    defaultMsgReceiveCallback.call(type, chatMsg);
+                } else {
+                    msgReceiveCallback.call(type, chatMsg);
+                }
             }
         } else {
             ctx.fireChannelRead(object);
         }
+    }
+
+    public void setMsgReceiveCallback(MsgReceiveCallback msgReceiveCallback) {
+        this.msgReceiveCallback = msgReceiveCallback;
     }
 }

@@ -51,9 +51,9 @@ public class ServerQimProtocolHandler extends SimpleChannelInboundHandler<ImProt
         Map<String, QimMessageProcessor> handlers = applicationContext.getBeansOfType(QimMessageProcessor.class);
         for (QimMessageProcessor messageProcessor : handlers.values()) {
             Processor processor = messageProcessor.getClass().getDeclaredAnnotation(Processor.class);
-            ProcessorContainer context = contextMap.getOrDefault(processor.type(), new ProcessorContainer(processor.type()));
+            ProcessorContainer context = contextMap.getOrDefault(processor.value(), new ProcessorContainer(processor.value()));
             context.getHandlers().add(messageProcessor);
-            contextMap.put(processor.type(), context);
+            contextMap.put(processor.value(), context);
         }
         for (ProcessorContainer context : contextMap.values()) {
             context.getHandlers().sort(AnnotationAwareOrderComparator.INSTANCE);
